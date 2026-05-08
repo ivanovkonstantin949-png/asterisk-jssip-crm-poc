@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PoC SIP-клиент оператора</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 520px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      label {
+        display: block;
+        margin-top: 12px;
+        font-size: 14px;
+        color: #444;
+      }
+      input,
+      button {
+        font-size: 16px;
+        padding: 8px 10px;
+        box-sizing: border-box;
+      }
+      input {
+        width: 100%;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .row > * {
+        flex: 1;
+      }
+      .status {
+        margin-top: 16px;
+        padding: 10px;
+        background: #f4f4f4;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .log {
+        margin-top: 16px;
+        height: 180px;
+        overflow-y: auto;
+        background: #111;
+        color: #0f0;
+        font-family: monospace;
+        padding: 8px;
+        font-size: 12px;
+      }
+      button {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PoC SIP-клиент оператора (jsSIP)</h1>
+
+    <label>WebSocket URI</label>
+    <input id="wsUri" value="ws://localhost:8088/asterisk/ws" />
+
+    <label>Extension (логин)</label>
+    <input id="ext" value="1001" />
+
+    <label>Пароль</label>
+    <input id="password" type="password" value="" />
+
+    <div class="row">
+      <button id="register">Register</button>
+      <button id="unregister">Unregister</button>
+    </div>
+
+    <label>Кому звонить (extension)</label>
+    <input id="callee" value="1002" />
+
+    <div class="row">
+      <button id="call">Call</button>
+      <button id="hangup">Hangup</button>
+    </div>
+
+    <div class="status" id="status">Status: idle</div>
+    <div class="log" id="log"></div>
+
+    <audio id="remoteAudio" autoplay></audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/jssip@3.10.0/dist/jssip.min.js"></script>
+    <script src="client.js"></script>
+  </body>
+</html>

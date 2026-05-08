@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  asterisk:
+    image: andrius/asterisk:20.6.0
+    container_name: poc-asterisk
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
+      - ./asterisk/http.conf:/etc/asterisk/http.conf:ro
+      - ./asterisk/ari.conf:/etc/asterisk/ari.conf:ro
+      - ./asterisk/rtp.conf:/etc/asterisk/rtp.conf:ro
+      - ./asterisk/modules.conf:/etc/asterisk/modules.conf:ro
+
+  crm-backend:
+    build: ./crm-backend
+    container_name: poc-crm-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - ARI_URL=${ARI_URL:-http://localhost:8088}
+      - ARI_USER=${ARI_USER}
+      - ARI_PASS=${ARI_PASS}
+      - ARI_APP=${ARI_APP:-poc-stasis}
+      - PORT=${BACKEND_PORT:-3000}
+    network_mode: host
+    depends_on:
+      - asterisk
+
+  browser-client:
+    image: nginx:alpine
+    container_name: poc-browser-client
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./browser-client:/usr/share/nginx/html:ro
