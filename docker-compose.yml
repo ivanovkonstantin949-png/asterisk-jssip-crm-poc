@@ -3,14 +3,12 @@ services:
     image: andrius/asterisk:20.7-cert10_debian-trixie
     container_name: poc-asterisk
     restart: unless-stopped
-    # Bridge networking с явными портами — работает и на Linux, и на macOS Docker Desktop.
-    # Для прода/больших нагрузок переключить на network_mode: host (Linux only).
     ports:
       - "5060:5060/udp"
       - "5060:5060/tcp"
-      - "8088:8088/tcp"   # HTTP (ARI + WS для jsSIP)
-      - "8089:8089/tcp"   # HTTPS/WSS (TLS, опционально)
-      - "10000-10010:10000-10010/udp"  # узкий RTP-диапазон под демо
+      - "8088:8088/tcp"
+      - "8089:8089/tcp"
+      - "10000-10010:10000-10010/udp"
     volumes:
       - ./asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
       - ./asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
@@ -19,9 +17,18 @@ services:
       - ./asterisk/rtp.conf:/etc/asterisk/rtp.conf:ro
       - ./asterisk/modules.conf:/etc/asterisk/modules.conf:ro
 
-  crm-backend:
-    build: ./crm-backend
-    container_name: poc-crm-backend
+  mock-crm:
+    build: ./mock-crm
+    container_name: poc-mock-crm
+    restart: unless-stopped
+    environment:
+      - PORT=4000
+    ports:
+      - "${MOCK_CRM_PORT:-4000}:4000"
+
+  voice-gateway:
+    build: ./voice-gateway
+    container_name: poc-voice-gateway
     restart: unless-stopped
     env_file:
       - .env
@@ -31,10 +38,13 @@ services:
       - ARI_PASS=${ARI_PASS}
       - ARI_APP=${ARI_APP:-poc-stasis}
       - PORT=3000
+      - CRM_HTTP_URL=http://mock-crm:4000
+      - CRM_WS_URL=ws://mock-crm:4000/ws/manager-status
     ports:
       - "${BACKEND_PORT:-3000}:3000"
     depends_on:
       - asterisk
+      - mock-crm
 
   browser-client:
     image: nginx:alpine
