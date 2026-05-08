@@ -62,13 +62,17 @@
     <h1>PoC SIP-клиент оператора (jsSIP)</h1>
 
     <label>WebSocket URI</label>
-    <input id="wsUri" value="ws://localhost:8088/asterisk/ws" />
+    <input id="wsUri" value="ws://localhost:8088/ws" />
 
     <label>Extension (логин)</label>
     <input id="ext" value="1001" />
 
     <label>Пароль</label>
-    <input id="password" type="password" value="" />
+    <input id="password" type="password" value="demo-pass-1001" />
+    <small style="color: #888"
+      >DEMO: для 1001 — demo-pass-1001, для 1002 — demo-pass-1002, для 1003 —
+      demo-pass-1003</small
+    >
 
     <div class="row">
       <button id="register">Register</button>

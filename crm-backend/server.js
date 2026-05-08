@@ -178,4 +178,6 @@ app.post("/pin", (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => console.log(`[http] crm-backend listening on :${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`[http] crm-backend listening on 0.0.0.0:${PORT}`),
+);
