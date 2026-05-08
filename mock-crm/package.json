@@ -1,13 +1,12 @@
 {
-  "name": "poc-crm-backend",
+  "name": "mock-crm",
   "version": "0.1.0",
-  "description": "Node.js ARI backend для PoC asterisk-jssip-crm-poc",
+  "description": "Имитация Node.js CRM клиента — отвечает на lookup, принимает webhooks, шлёт WS-обновления статусов операторов",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "ari-client": "^2.2.0",
     "express": "^4.19.2",
     "ws": "^8.17.0"
   },
